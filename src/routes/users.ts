@@ -28,5 +28,7 @@ export async function usersRoutes(app: FastifyInstance) {
       name,
       email,
     })
+
+    return reply.status(201).send()
   })
 }
