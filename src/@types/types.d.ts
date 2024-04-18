@@ -1,5 +1,6 @@
 // eslint-disable-next-line
 import { Knex } from 'knex'
+import 'fastify'
 
 declare module 'knex/types/tables' {
   export interface Tables {
@@ -17,6 +18,20 @@ declare module 'knex/types/tables' {
       description: string
       created_at: string
       is_in_diet: boolean
+    }
+  }
+}
+
+// FastifyRequestContext
+declare module 'fastify' {
+  export interface FastifyRequest {
+    user?: {
+      id: string
+      session_id: string
+      name: string
+      email: string
+      created_at: string
+      updated_at: string
     }
   }
 }
