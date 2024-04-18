@@ -18,9 +18,20 @@ describe('Meals routes', () => {
   })
 
   it('should be able to create a new meal for a user', async () => {
-    await request(app.server)
+    const user = await request(app.server)
       .post('/users/create')
       .send({ name: 'John Doe', email: 'johndoe@gmail.com' })
+      .expect(201)
+
+    await request(app.server)
+      .post('/meals/create')
+      // @ts-ignore
+      .set('Cookie', user.get('Set-Cookie'))
+      .send({
+        name: 'Breakfast',
+        description: "It's a breakfast",
+        isInDiet: true,
+      })
       .expect(201)
   })
 })
