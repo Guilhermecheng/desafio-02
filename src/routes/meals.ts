@@ -54,19 +54,27 @@ export async function mealsRoutes(app: FastifyInstance) {
       const meals = await knex('meals').where('user_id', sessionId).select()
       const total = meals.length
 
-      const inDiet = meals.filter((meal) => meal.is_in_diet === true).length
+      const inDiet = meals.filter((meal) => meal.is_in_diet === 1).length
       const outDiet = total - inDiet
 
-      const streaks = meals.reduce(
-        function (meal, n) {
-          if (n) meal[meal.length - 1]++
-          else meal.push(0)
-          return meal
+      const { bestOnDietSequence } = meals.reduce(
+        (acc, meal) => {
+          if (meal.is_in_diet === 1) {
+            acc.currentSequence += 1
+          } else {
+            acc.currentSequence = 0
+          }
+
+          if (acc.currentSequence > acc.bestOnDietSequence) {
+            acc.bestOnDietSequence = acc.currentSequence
+          }
+
+          return acc
         },
-        [0],
+        { bestOnDietSequence: 0, currentSequence: 0 },
       )
 
-      const streak = Math.max(...streaks)
+      const streak = bestOnDietSequence
 
       return {
         total,
